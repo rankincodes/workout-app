@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "../ui/use-toast"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form"
 import { PlusIcon } from "@radix-ui/react-icons"
+import { createExercise } from "@/lib/actions"
 
 const FormSchema = z.object({
     name: z.string().min(3).max(255),
@@ -16,7 +17,6 @@ const FormSchema = z.object({
 
 
 export const AddExerciseDrawer: React.FC = () => {
-
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
@@ -26,19 +26,16 @@ export const AddExerciseDrawer: React.FC = () => {
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
         toast({
-            title: "You submitted the following values:",
-            description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-                </pre>
-            ),
+            title: `${data.name} added`,
         })
+        
+        createExercise(data)
     }
 
     return (
         <Drawer>
             <DrawerTrigger asChild>
-                <Button variant="outline" size="icon" >
+                <Button variant="icon" size="icon" >
                     <PlusIcon className="w-4 h-4" />
                 </Button>
             </DrawerTrigger>

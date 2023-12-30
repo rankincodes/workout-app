@@ -1,12 +1,20 @@
 'use server'
-import { createClient } from "@supabase/supabase-js"
 
-const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_KEY!)
+import { cookies } from "next/headers"
+import { createClient } from "./utils/supabase/server"
 
-export async function createExercise() {
+export async function createExercise(exercise: any) {
+    const cookieStore = cookies()
+
+    const supabase = createClient(cookieStore)
+
+    const { data } = await supabase.auth.getSession()
+    const { } = await supabase.auth.getUser(data.session?.user.id)
+
     const { error } = await supabase
         .from('exercises')
         .insert({
-            name: 'Bench Press',
+            ...exercise,
+            user_id: data.session?.user.id
         })
 }
