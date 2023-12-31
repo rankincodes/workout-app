@@ -7,16 +7,20 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "../ui/use-toast"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
-import { MinusIcon, PlusIcon } from "@radix-ui/react-icons"
-import { createExercise, createSet } from "@/lib/actions"
+import { CalendarIcon, MinusIcon, PlusIcon } from "@radix-ui/react-icons"
+import { createSet } from "@/lib/actions"
 import { Exercise, Set } from "@/lib/types/app.types"
 import React from "react"
 import { Input } from "../ui/input"
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
+import { Calendar } from "../ui/calendar"
+import { format, isToday } from "date-fns"
 
 const FormSchema = z.object({
     weight: z.coerce.number().min(0).max(3000),
     reps: z.coerce.number().min(0).max(200),
     duration_secs: z.coerce.number().min(0).max(3600),
+    date: z.date(),
 })
 
 
@@ -34,6 +38,7 @@ export const AddSet: React.FC<{
             weight: lastSet?.weight ?? 0,
             reps: lastSet?.reps ?? 0,
             duration_secs: lastSet?.duration_secs ?? 0,
+            date: new Date(),
         },
     })
 
@@ -42,7 +47,7 @@ export const AddSet: React.FC<{
             title: 'Set recorded',
         })
 
-        createSet(exercise, data)
+        createSet(exercise, { ...data, date: data.date.toISOString() })
         setOpen(false)
     }
 
@@ -61,6 +66,36 @@ export const AddSet: React.FC<{
                 <DrawerFooter>
                     <Form {...form} >
                         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-y-2">
+                            <FormField
+                                name="date"
+                                control={form.control}
+                                render={() => (
+                                    <FormItem>
+                                        <FormLabel>Date</FormLabel>
+                                        <FormControl>
+                                            <Popover>
+                                                <PopoverTrigger asChild className="w-full">
+                                                    <Button
+                                                        variant={"outline"}
+                                                        className="flex justify-start"
+                                                    >
+                                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                                        {formatDate(form.getValues('date') ?? new Date())}
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-auto p-0">
+                                                    <Calendar
+                                                        mode="single"
+                                                        selected={form.watch('date')}
+                                                        onSelect={(day) => form.setValue('date', day as Date)}
+                                                        initialFocus
+                                                    />
+                                                </PopoverContent>
+                                            </Popover>
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
                             {exercise.has_weight && <FormField
                                 control={form.control}
                                 name="weight"
@@ -71,7 +106,7 @@ export const AddSet: React.FC<{
                                             <div className="inline-flex h-14 w-full rounded-md border text-sm font-medium border-input bg-transparent text-sm shadow-sm transition-colors ">
                                                 <button
                                                     className="px-2 inline-flex whitespace-nowrap transition-colors items-center justify-center rounded-l-md bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90"
-                                                    type="button" onClick={() => form.setValue('weight', Number(form.getValues()['weight']) - 5)}
+                                                    type="button" onClick={() => form.setValue('weight', Number(form.getValues('weight')) - 5)}
                                                 >
                                                     <div className="flex items-center space-x-1 px-2">
                                                         <MinusIcon className="w-4 h-4" />
@@ -87,7 +122,7 @@ export const AddSet: React.FC<{
                                                 />
                                                 <button
                                                     className="px-2 inline-flex whitespace-nowrap text-sm font-medium transition-colors items-center justify-center rounded-r-md bg-green-500 text-destructive-foreground shadow-sm hover:bg-green-500/90"
-                                                    type="button" onClick={() => form.setValue('weight', Number(form.getValues()['weight']) + 5)}
+                                                    type="button" onClick={() => form.setValue('weight', Number(form.getValues('weight')) + 5)}
                                                 >
                                                     <div className="flex items-center space-x-1 px-2">
                                                         <PlusIcon className="w-4 h-4" />
@@ -165,4 +200,11 @@ export const AddSet: React.FC<{
             </DrawerContent>
         </Drawer >
     )
+}
+
+const formatDate = (date?: Date) => {
+    if (!date || isToday(date)) {
+        return "Today"
+    }
+    return format(date, "PPP")
 }

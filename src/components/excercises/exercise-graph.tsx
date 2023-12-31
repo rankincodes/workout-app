@@ -23,7 +23,7 @@ export const ExerciseSummaryChart: React.FC<{ exercise: Exercise, stats: Exercis
                     </YAxis>}
                     {exercise.has_duration && <YAxis dataKey="total_duration_secs" tickFormatter={formatSeconds} domain={[0, 'dataMax']} yAxisId="duration" orientation="left" />}
                     {onlyReps && <YAxis yAxisId="reps" dataKey={"total_reps"} domain={[0, 'dataMax']} orientation="left" />}
-                    <YAxis yAxisId="sets" domain={['auto', 'auto']} orientation="right" />
+                    <YAxis yAxisId="sets" domain={[0, 'auto']} orientation="right" />
                     <XAxis dataKey="date" tickFormatter={formatDate} />
                     {/* Data */}
                     {exercise.has_duration && <Line type="monotone" dataKey="total_duration_secs" stroke="#ff7300" strokeWidth={2} yAxisId="duration" name="Time" />}
