@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/utils/supabase/middleware'
 import { NextResponse, type NextRequest } from 'next/server'
 
-const baseUrl = 'http://localhost:3000'
+const baseUrl = process.env.VERCEL_URL || 'http://localhost:3000'
 
 export async function middleware(request: NextRequest) {
   const { supabase, response } = createClient(request)
