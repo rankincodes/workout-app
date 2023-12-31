@@ -12,6 +12,9 @@ export interface Database {
       exercises: {
         Row: {
           created_at: string
+          has_duration: boolean
+          has_reps: boolean
+          has_weight: boolean
           id: number
           last_set: string | null
           name: string
@@ -20,6 +23,9 @@ export interface Database {
         }
         Insert: {
           created_at?: string
+          has_duration?: boolean
+          has_reps?: boolean
+          has_weight?: boolean
           id?: number
           last_set?: string | null
           name: string
@@ -28,6 +34,9 @@ export interface Database {
         }
         Update: {
           created_at?: string
+          has_duration?: boolean
+          has_reps?: boolean
+          has_weight?: boolean
           id?: number
           last_set?: string | null
           name?: string
@@ -49,8 +58,10 @@ export interface Database {
           completed_at: string
           created_at: string
           date: string
+          duration_secs: number
           exercise_id: number
           id: number
+          reps: number | null
           user_id: string
           weight: number | null
           weight_unit: Database["public"]["Enums"]["weight_unit"]
@@ -59,8 +70,10 @@ export interface Database {
           completed_at?: string
           created_at?: string
           date?: string
+          duration_secs?: number
           exercise_id: number
           id?: number
+          reps?: number | null
           user_id: string
           weight?: number | null
           weight_unit: Database["public"]["Enums"]["weight_unit"]
@@ -69,8 +82,10 @@ export interface Database {
           completed_at?: string
           created_at?: string
           date?: string
+          duration_secs?: number
           exercise_id?: number
           id?: number
+          reps?: number | null
           user_id?: string
           weight?: number | null
           weight_unit?: Database["public"]["Enums"]["weight_unit"]
@@ -97,7 +112,19 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_exercise_summary_per_day: {
+        Args: {
+          p_user_id: string
+          p_exercise_id: number
+        }
+        Returns: {
+          date: string
+          max_weight: number
+          total_reps: number
+          total_duration_secs: number
+          num_sets: number
+        }[]
+      }
     }
     Enums: {
       weight_unit: "kg" | "lb"

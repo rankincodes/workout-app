@@ -3,7 +3,7 @@
 import { cookies } from "next/headers"
 import { createClient } from "./utils/supabase/server"
 import { Database } from "./types/database.types"
-import { Exercise, Set, SetStat } from "./types/app.types"
+import { Exercise, ExerciseSummary, Set } from "./types/app.types"
 
 export async function createExercise(exercise: any) {
     const cookieStore = cookies()
@@ -71,28 +71,29 @@ export async function fetchSets(exercise_id: number): Promise<Set[]> {
     return sets ?? []
 }
 
-export async function fetchSetStats(exercise_id: number): Promise<SetStat[]> {
+export async function fetchSetStats(exercise_id: number): Promise<ExerciseSummary[]> {
     const cookieStore = cookies()
 
     const supabase = createClient(cookieStore)
 
     const { data } = await supabase.auth.getSession()
 
-    const { data: setStats, error } = await supabase.rpc('get_max_weights_and_sets', {
-        exercise_id_param: exercise_id,
-        user_id_param: data.session?.user.id,
+    const { data: summary, error} = await supabase.rpc('get_exercise_summary_per_day', {
+        p_exercise_id: exercise_id,
+        p_user_id: data.session?.user.id,
     })
 
-    return setStats ?? []
+    return summary ?? []
 }
 
-export async function createSet(exercise: Exercise, set: any) {
+type SetInsert = Partial<Database["public"]["Tables"]["sets"]["Insert"]>
+export async function createSet(exercise: Exercise, set: SetInsert) {
     const cookieStore = cookies()
     const supabase = createClient(cookieStore)
     const { data } = await supabase.auth.getSession()
 
     await supabase.from('exercises').update({
-        last_set: set,
+        last_set: new Date(),
     }).eq('id', exercise.id)
 
     const { error } = await supabase
@@ -104,5 +105,4 @@ export async function createSet(exercise: Exercise, set: any) {
             weight_unit: exercise.weight_unit,
         })
 
-    console.log(error)
 }
