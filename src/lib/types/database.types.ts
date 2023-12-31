@@ -13,19 +13,84 @@ export interface Database {
         Row: {
           created_at: string
           id: number
+          last_set: string | null
           name: string
+          user_id: string
+          weight_unit: Database["public"]["Enums"]["weight_unit"]
         }
         Insert: {
           created_at?: string
           id?: number
+          last_set?: string | null
           name: string
+          user_id: string
+          weight_unit?: Database["public"]["Enums"]["weight_unit"]
         }
         Update: {
           created_at?: string
           id?: number
+          last_set?: string | null
           name?: string
+          user_id?: string
+          weight_unit?: Database["public"]["Enums"]["weight_unit"]
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "exercises_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      sets: {
+        Row: {
+          completed_at: string
+          created_at: string
+          date: string
+          exercise_id: number
+          id: number
+          user_id: string
+          weight: number | null
+          weight_unit: Database["public"]["Enums"]["weight_unit"]
+        }
+        Insert: {
+          completed_at?: string
+          created_at?: string
+          date?: string
+          exercise_id: number
+          id?: number
+          user_id: string
+          weight?: number | null
+          weight_unit: Database["public"]["Enums"]["weight_unit"]
+        }
+        Update: {
+          completed_at?: string
+          created_at?: string
+          date?: string
+          exercise_id?: number
+          id?: number
+          user_id?: string
+          weight?: number | null
+          weight_unit?: Database["public"]["Enums"]["weight_unit"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sets_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "exercises"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sets_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {
@@ -35,7 +100,7 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      weight_unit: "kg" | "lb"
     }
     CompositeTypes: {
       [_ in never]: never
