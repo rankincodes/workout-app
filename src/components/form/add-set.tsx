@@ -48,6 +48,7 @@ export const AddSet: React.FC<{
         })
 
         createSet(exercise, { ...data, date: data.date.toISOString() })
+        form.reset()
         setOpen(false)
     }
 

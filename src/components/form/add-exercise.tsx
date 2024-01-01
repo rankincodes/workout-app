@@ -41,6 +41,7 @@ export const AddExerciseDrawer: React.FC = () => {
         })
 
         await createExercise(data)
+        form.reset()
         setOpen(false)
     }
 
