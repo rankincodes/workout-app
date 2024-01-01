@@ -7,9 +7,9 @@ export async function middleware(request: NextRequest) {
   const { supabase, response } = createClient(request)
   const { data } = await supabase.auth.getSession()
 
-  if (request.nextUrl.pathname === '/login' && data) {
+  if (request.nextUrl.pathname === '/login' && data.session) {
     return NextResponse.redirect(baseUrl)
-  } else if (!data) {
+  } else if (!data.session && request.nextUrl.pathname !== '/login') {
     return NextResponse.redirect(baseUrl + '/login')
   }
 

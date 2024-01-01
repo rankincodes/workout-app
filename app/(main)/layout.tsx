@@ -11,24 +11,16 @@ import { NavBarDropdown } from '@/components/ui/nav-dropdown'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export const metadata: Metadata = {
-  title: 'Some lifting app',
-  description: 'Go to the gym',
-}
-
-export default function RootLayout({
-  children,
+export default function MainLayout({
+    children,
 }: {
-  children: React.ReactNode
+    children: React.ReactNode
 }) {
-
-
-  return (
-    <html lang="en">
-      <body className={inter.className}>
-        {children}
-        <Toaster />
-      </body>
-    </html>
-  )
+    return (
+        <div className="top-0 flex flex-row justify-between border-b w-screen">
+            <h1 className="p-2 px-4">Go to the fucking gym</h1>
+            <NavBarDropdown />
+            {children}
+        </div>
+    )
 }
