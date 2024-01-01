@@ -1,6 +1,6 @@
 import { ExerciseCard } from "@/components/excercises/exercise-card";
 import { AddExerciseDrawer } from "@/components/form/add-exercise";
-import { fetchExercises } from "@/lib/actions";
+import { fetchExercises } from "@/lib/actions/exercises";
 
 export default async function Home() {
   const exercises = await fetchExercises()

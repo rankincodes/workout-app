@@ -1,9 +1,9 @@
 'use server'
 
 import { cookies } from "next/headers"
-import { createClient } from "./utils/supabase/server"
-import { Database } from "./types/database.types"
-import { Exercise, ExerciseSummary, Set } from "./types/app.types"
+import { createClient } from "../utils/supabase/server"
+import { Database } from "../types/database.types"
+import { Exercise, ExerciseSummary, Set } from "../types/app.types"
 
 export async function createExercise(exercise: any) {
     const cookieStore = cookies()

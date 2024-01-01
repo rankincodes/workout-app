@@ -1,7 +1,7 @@
 import { Exercise, Set } from "@/lib/types/app.types";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { AddSet } from "../form/add-set";
-import { fetchSetStats, fetchSets } from "@/lib/actions";
+import { fetchSetStats, fetchSets } from "@/lib/actions/exercises";
 import { ExerciseSummaryChart } from "./exercise-graph";
 
 export const ExerciseCard = async ({ exercise }: { exercise: Exercise }) => {

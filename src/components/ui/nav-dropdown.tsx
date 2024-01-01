@@ -3,7 +3,7 @@
 import { IconSettings } from "@tabler/icons-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./dropdown-menu"
 import { createClient } from "@/lib/utils/supabase/client"
-import { redirect, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 
 export const NavBarDropdown: React.FC = () => {
@@ -12,7 +12,7 @@ export const NavBarDropdown: React.FC = () => {
     const signOut = async () => {
         const supabase = createClient()
         const { error } = await supabase.auth.signOut()
-        router.replace('/login')
+        router.refresh()
     }
 
     return (
@@ -22,7 +22,7 @@ export const NavBarDropdown: React.FC = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuItem asChild>
-                    <Link onClick={signOut} href="/login">Log out</Link>
+                    <Link onClick={() => signOut()} href="/login">Log out</Link>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
