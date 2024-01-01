@@ -48,7 +48,7 @@ const formatSeconds = (seconds: number) => {
 
 const formatDate = (date: string) => {
     const dateObj = new Date(date)
-    return `${dateObj.getMonth() + 1}/${dateObj.getDate() + 1}`
+    return `${dateObj.getUTCMonth() + 1}/${dateObj.getUTCDate()}`
 }
 
 const fakeData: ExerciseSummary[] = [
