@@ -2,10 +2,15 @@
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { LoginFormSchema, signIn, signUp } from "@/lib/actions/auth"
+import { signIn, signUp } from "@/lib/actions/auth"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
+
+const LoginFormSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+})
 
 export default function Login({
   searchParams,
