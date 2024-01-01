@@ -3,12 +3,14 @@
 import { cookies, headers } from "next/headers"
 import { createClient } from "../utils/supabase/server"
 import { redirect } from "next/navigation"
-import { LoginFormSchema } from "../../../app/(auth)/login/page"
 import * as z from "zod"
 
-export const signUp = async (data: z.infer<typeof LoginFormSchema>) => {
-    console.log('signUp')
+export const LoginFormSchema = z.object({
+    email: z.string().email(),
+    password: z.string().min(8),
+  })
 
+export const signUp = async (data: z.infer<typeof LoginFormSchema>) => {
     const origin = headers().get('origin')
     const cookieStore = cookies()
     const supabase = createClient(cookieStore)
@@ -28,8 +30,6 @@ export const signUp = async (data: z.infer<typeof LoginFormSchema>) => {
   }
 
   export const signIn = async (data: z.infer<typeof LoginFormSchema>) => {
-    'use server'
-
     const cookieStore = cookies()
     const supabase = createClient(cookieStore)
 
