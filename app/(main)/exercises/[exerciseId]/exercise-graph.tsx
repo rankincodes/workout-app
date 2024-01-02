@@ -1,6 +1,7 @@
 'use client'
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, ComposedChart, Bar, Legend, Scatter, Tooltip, CartesianGrid, Label } from "recharts"
 import { Exercise, ExerciseSummary } from "@/lib/types/app.types"
+import { formatSeconds } from "@/lib/utils"
 
 
 export const ExerciseSummaryChart: React.FC<{ exercise: Exercise, stats: ExerciseSummary[] }> = ({ exercise, stats }) => {
@@ -37,13 +38,6 @@ export const ExerciseSummaryChart: React.FC<{ exercise: Exercise, stats: Exercis
             </ResponsiveContainer>
         </div>
     )
-}
-
-const formatSeconds = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60)
-    const remainingSeconds = seconds % 60
-
-    return `${minutes}:${remainingSeconds}`
 }
 
 const formatDate = (date: string) => {

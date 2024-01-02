@@ -20,7 +20,7 @@ export async function createExercise(exercise: any) {
         })
 }
 
-export async function fetchExercises(): Promise<Exercise[]> {
+export async function getExercises(): Promise<Exercise[]> {
     const cookieStore = cookies()
 
     const supabase = createClient(cookieStore)
@@ -36,7 +36,24 @@ export async function fetchExercises(): Promise<Exercise[]> {
     return exercises ?? []
 }
 
-export async function fetchLastSet(exercise_id: number): Promise<Set | null> {
+export async function getExercise(id: number): Promise<Exercise | null> {
+    const cookieStore = cookies()
+
+    const supabase = createClient(cookieStore)
+
+    const { data } = await supabase.auth.getSession()
+
+    const { data: exercises, error } = await supabase
+        .from('exercises')
+        .select('*')
+        .eq('id', id)
+        .eq('user_id', data.session?.user.id)
+        .limit(1)
+
+    return exercises?.[0] ?? null
+}
+
+export async function getLastSet(exercise_id: number): Promise<Set | null> {
     const cookieStore = cookies()
 
     const supabase = createClient(cookieStore)
@@ -54,7 +71,7 @@ export async function fetchLastSet(exercise_id: number): Promise<Set | null> {
     return sets?.[0] ?? null
 }
 
-export async function fetchSets(exercise_id: number): Promise<Set[]> {
+export async function getSets(exercise_id: number): Promise<Set[]> {
     const cookieStore = cookies()
 
     const supabase = createClient(cookieStore)
@@ -71,7 +88,7 @@ export async function fetchSets(exercise_id: number): Promise<Set[]> {
     return sets ?? []
 }
 
-export async function fetchSetStats(exercise_id: number): Promise<ExerciseSummary[]> {
+export async function getSetStats(exercise_id: number): Promise<ExerciseSummary[]> {
     const cookieStore = cookies()
 
     const supabase = createClient(cookieStore)

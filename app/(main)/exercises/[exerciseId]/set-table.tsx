@@ -1,53 +1,78 @@
 "use client"
 
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-import { Exercise } from "@/lib/types/app.types";
+import { Exercise, Set } from "@/lib/types/app.types";
+import { formatSeconds } from "@/lib/utils";
 import { ColumnDef, getCoreRowModel, useReactTable, flexRender } from "@tanstack/react-table";
 import { format, formatDistanceToNow, isToday, isYesterday } from "date-fns"
-import Link from "next/link";
 
-const columns: ColumnDef<Exercise>[] = [
+const columns: ColumnDef<Set>[] = [
     {
-        accessorKey: "name",
-        header: "Exercise",
-    },
-    {
-        accessorKey: "last_set",
-        header: () => <div className="text-right">Last Set</div>,
+        accessorKey: "completed_at",
+        header: "Completed",
         cell: ({ row }) => {
-            const lastDate = row.getValue("last_set") as string
+            const lastDate = row.getValue("completed_at") as string
             let formattedDate = 'N/A'
             if (lastDate) {
                 const date = new Date(lastDate)
                 if (isToday(date)) {
+                    // local time, no date
                     formattedDate = format(date, "p")
-                } else if (isYesterday(date)) {
-                    formattedDate = 'Yesterday'
                 } else {
-                    formattedDate = formatDistanceToNow(new Date(lastDate), { addSuffix: true })
+
+                    // short month, day, time
+                    formattedDate = format(date, "MMM d, p")
                 }
             }
 
-            return <div className="text-right">{formattedDate}</div>
+            return formattedDate
         }
+    },
+    {
+        accessorKey: "weight",
+        header: () => <div className="text-right">Weight</div>,
+        cell: ({ row }) => {
+            const weight = row.getValue("weight") as number
+            const unit = row.original.weight_unit
+            return <div className="text-right">{weight} {unit}s</div>
+        }
+    },
+    {
+        accessorKey: "reps",
+        header: () => <div className="text-right">Reps</div>,
+        cell: ({ row }) => <div className="text-right">{row.getValue("reps")}</div>
+    },
+    {
+        accessorKey: "duration_secs",
+        header: "Time",
+        cell: ({ row }) => <div className="text-right">{formatSeconds(row.getValue("duration_secs") as number)}</div>
     }
 ]
 
 
-interface ExerciseTableProps {
-    data: Exercise[],
+interface SetTableProps {
+    sets: Set[],
+    exercise: Exercise
 }
 
-export function ExerciseTable({
-    data,
-}: ExerciseTableProps) {
+export function SetTable({
+    sets,
+    exercise
+}: SetTableProps) {
     const table = useReactTable({
-        data,
+        data: sets,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getRowId(originalRow, index, parent) {
             return originalRow.id.toString()
         },
+        initialState: {
+            columnVisibility: {
+                weight: exercise.has_weight,
+                reps: exercise.has_reps,
+                duration_secs: exercise.has_duration,
+            }
+        }
     })
 
     return (
@@ -80,9 +105,7 @@ export function ExerciseTable({
                             >
                                 {row.getVisibleCells().map((cell) => (
                                     <TableCell key={cell.id}>
-                                        <Link href={`/exercises/${row.id}`}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </Link>
+                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </TableCell>
                                 ))}
                             </TableRow>

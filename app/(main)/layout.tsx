@@ -14,8 +14,9 @@ export default function MainLayout({
                 <h1 className="p-2 px-4">Go to the fucking gym</h1>
                 <NavBarDropdown />
             </div>
-            {children}
+            <main className="flex flex-col bg-white dark:bg-slate-900 p-4 gap-y-4">
+                {children}
+            </main>
         </>
-
     )
 }
