@@ -13,7 +13,7 @@ export default async function Home() {
         <Button disabled variant="ghost">Exercises</Button>
       </div>
       {exercises.length > 0 && <ExerciseTable data={exercises} />}
-      <Button variant="outline"><Link href='/exercises/new'>Add Exercise</Link></Button>
+      <Button asChild variant="outline"><Link href='/exercises/new'>Add Exercise</Link></Button>
     </>
   )
 }
