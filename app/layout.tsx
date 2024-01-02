@@ -12,7 +12,7 @@ import { NavBarDropdown } from '@/components/ui/nav-dropdown'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Some lifting app',
+  title: 'Some Workout App',
   description: 'Go to the gym',
 }
 
