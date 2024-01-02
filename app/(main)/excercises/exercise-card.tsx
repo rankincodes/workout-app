@@ -1,6 +1,6 @@
 import { Exercise, Set } from "@/lib/types/app.types";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
-import { AddSet } from "../form/add-set";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../../../src/components/ui/card";
+import { AddSet } from "../../../src/components/form/add-set";
 import { fetchSetStats, fetchSets } from "@/lib/actions/exercises";
 import { ExerciseSummaryChart } from "./exercise-graph";
 
