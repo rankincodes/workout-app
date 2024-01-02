@@ -47,7 +47,7 @@ export const AddSet: React.FC<{
             title: 'Set recorded',
         })
 
-        createSet(exercise, { ...data, date: data.date.toISOString() })
+        createSet(exercise, { ...data, date: data.date.toLocaleDateString() })
         form.reset()
         setOpen(false)
     }
