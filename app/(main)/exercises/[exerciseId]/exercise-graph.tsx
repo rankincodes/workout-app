@@ -5,16 +5,12 @@ import { formatSeconds } from "@/lib/utils"
 
 
 export const ExerciseSummaryChart: React.FC<{ exercise: Exercise, stats: ExerciseSummary[] }> = ({ exercise, stats }) => {
-    if (stats.length < 1) return (
-        <div className="flex justify-center items-center w-full">
-            <p>Complete a set to see data</p>
-        </div>
-    )
+    if (stats.length < 1) return null
 
-    const onlyReps =exercise.has_reps && (!exercise.has_duration && !exercise.has_weight) 
+    const onlyReps = exercise.has_reps && (!exercise.has_duration && !exercise.has_weight)
 
     return (
-        <div className="h-[150px] w-full">
+        <div className="h-[150px]">
             <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart width={500} height={500} data={stats}>
                     {/* Axes */}

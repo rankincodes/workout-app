@@ -21,7 +21,6 @@ const columns: ColumnDef<Set>[] = [
                     // local time, no date
                     formattedDate = format(date, "p")
                 } else {
-
                     // short month, day, time
                     formattedDate = format(date, "MMM d, p")
                 }
@@ -46,15 +45,14 @@ const columns: ColumnDef<Set>[] = [
     },
     {
         accessorKey: "duration_secs",
-        header: "Time",
-        cell: ({ row }) => <div className="text-right">{formatSeconds(row.getValue("duration_secs") as number)}</div>
+        header: () => <div className="text-right">Time</div>,
+        cell: ({ row }) => <div className="text-right">{formatSeconds(row.getValue("duration_secs") as number)}</div>,
     },
     {
         id: 'actions',
-        cell: ({ row }) => <Link className="w-4" href={`/exercises/${row.original.exercise_id}/sets/${row.original.id}/edit`}><IconEdit size={18} color="gray" /></Link>,
-        size: 0.1,
-        maxSize: 100,
-        enableResizing: false,
+        cell: ({ row }) => <Link className="flex justify-center items-center w-[20px]" href={`/exercises/${row.original.exercise_id}/sets/${row.original.id}/edit`}><IconEdit size={18} stroke={1.5} color="gray" /></Link>,
+        size: 20,
+        enableResizing: false
     }
 ]
 
@@ -80,8 +78,8 @@ export function SetTable({
                 weight: exercise.has_weight,
                 reps: exercise.has_reps,
                 duration_secs: exercise.has_duration,
-            }
-        }
+            },
+        },
     })
 
     return (
@@ -89,10 +87,10 @@ export function SetTable({
             <Table>
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
+                        <TableRow key={headerGroup.id} >
                             {headerGroup.headers.map((header) => {
                                 return (
-                                    <TableHead key={header.id}>
+                                    <TableHead key={header.id} className={`w-[${header.column.getSize()}px]`}>
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(
@@ -108,12 +106,9 @@ export function SetTable({
                 <TableBody>
                     {table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row) => (
-                            <TableRow
-                                key={row.id}
-                                data-state={row.getIsSelected() && "selected"}
-                            >
+                            <TableRow key={row.id}>
                                 {row.getVisibleCells().map((cell) => (
-                                    <TableCell key={cell.id}>
+                                    <TableCell key={cell.id} className={`max-w-[${cell.column.getSize()}px]`}>
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </TableCell>
                                 ))}

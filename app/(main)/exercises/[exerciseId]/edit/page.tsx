@@ -5,9 +5,9 @@ import { getExercise } from "@/lib/actions/exercises";
 import { redirect } from "next/navigation";
 
 export default async function Page({
-    exerciseId,
+    params: { exerciseId },
 }: {
-    exerciseId: number
+    params: { exerciseId: number }
 }) {
     const exercise = await getExercise(exerciseId)
 
@@ -23,7 +23,7 @@ export default async function Page({
                 &gt;
                 <Button variant="ghost" disabled>Edit {exercise.name}</Button>
             </div>
-            <ExerciseForm />
+            <ExerciseForm exercise={exercise} />
         </>
     )
 }
