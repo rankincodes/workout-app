@@ -1,6 +1,8 @@
 import { getExercise, getLastSet } from "@/lib/actions/exercises";
-import { NewSetForm } from "./form";
 import { redirect } from "next/navigation";
+import { SetForm } from "../form";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default async function Page({
     params: { exerciseId },
@@ -18,9 +20,18 @@ export default async function Page({
     if (!exercise) {
         return redirect("/")
     }
-    
+
     return (
-        <NewSetForm exercise={exercise} lastSet={lastSet} />
+        <>
+            <div className="flex justify-start space-x-2 items-center">
+                <Button asChild variant="ghost"><Link href="/">Exercises</Link></Button>
+                &gt;
+                <Button variant="ghost">{exercise.name}</Button>
+                &gt;
+                <Button variant="ghost" disabled>New Set</Button>
+            </div>
+            <SetForm exercise={exercise} lastSet={lastSet} />
+        </>
     )
 }
 

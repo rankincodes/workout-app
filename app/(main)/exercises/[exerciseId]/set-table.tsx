@@ -3,8 +3,10 @@
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Exercise, Set } from "@/lib/types/app.types";
 import { formatSeconds } from "@/lib/utils";
+import { IconEdit } from "@tabler/icons-react";
 import { ColumnDef, getCoreRowModel, useReactTable, flexRender } from "@tanstack/react-table";
 import { format, formatDistanceToNow, isToday, isYesterday } from "date-fns"
+import Link from "next/link";
 
 const columns: ColumnDef<Set>[] = [
     {
@@ -46,6 +48,13 @@ const columns: ColumnDef<Set>[] = [
         accessorKey: "duration_secs",
         header: "Time",
         cell: ({ row }) => <div className="text-right">{formatSeconds(row.getValue("duration_secs") as number)}</div>
+    },
+    {
+        id: 'actions',
+        cell: ({ row }) => <Link className="w-4" href={`/exercises/${row.original.exercise_id}/sets/${row.original.id}/edit`}><IconEdit size={18} color="gray" /></Link>,
+        size: 0.1,
+        maxSize: 100,
+        enableResizing: false,
     }
 ]
 

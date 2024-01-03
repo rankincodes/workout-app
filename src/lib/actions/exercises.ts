@@ -5,7 +5,8 @@ import { createClient } from "../utils/supabase/server"
 import { Database } from "../types/database.types"
 import { Exercise, ExerciseSummary, Set } from "../types/app.types"
 
-export async function createExercise(exercise: any) {
+type ExerciseInsert = Partial<Database["public"]["Tables"]["exercises"]["Insert"]>
+export async function createExercise(exercise: ExerciseInsert) {
     const cookieStore = cookies()
 
     const supabase = createClient(cookieStore)
@@ -18,6 +19,18 @@ export async function createExercise(exercise: any) {
             ...exercise,
             user_id: data.session?.user.id
         })
+}
+
+type ExerciseUpdate = Partial<Database["public"]["Tables"]["exercises"]["Update"]>
+export async function updateExercise(exercise: ExerciseUpdate) {
+    const cookieStore = cookies()
+
+    const supabase = createClient(cookieStore)
+
+    const { error } = await supabase
+        .from('exercises')
+        .update(exercise)
+        .eq('id', exercise.id)
 }
 
 export async function getExercises(): Promise<Exercise[]> {
@@ -71,6 +84,23 @@ export async function getLastSet(exercise_id: number): Promise<Set | null> {
     return sets?.[0] ?? null
 }
 
+export async function getSet(id: number): Promise<Set | null> {
+    const cookieStore = cookies()
+
+    const supabase = createClient(cookieStore)
+
+    const { data } = await supabase.auth.getSession()
+
+    const { data: sets, error } = await supabase
+        .from('sets')
+        .select('*')
+        .eq('id', id)
+        .eq('user_id', data.session?.user.id)
+        .limit(1)
+
+    return sets?.[0] ?? null
+}
+
 export async function getSets(exercise_id: number): Promise<Set[]> {
     const cookieStore = cookies()
 
@@ -95,7 +125,7 @@ export async function getSetStats(exercise_id: number): Promise<ExerciseSummary[
 
     const { data } = await supabase.auth.getSession()
 
-    const { data: summary, error} = await supabase.rpc('get_exercise_summary_per_day', {
+    const { data: summary, error } = await supabase.rpc('get_exercise_summary_per_day', {
         p_exercise_id: exercise_id,
         p_user_id: data.session?.user.id,
     })
@@ -122,4 +152,15 @@ export async function createSet(exercise: Exercise, set: SetInsert) {
             weight_unit: exercise.weight_unit,
         })
 
+}
+
+type SetUpdate = Partial<Database["public"]["Tables"]["sets"]["Update"]>
+export async function updateSet(set: SetUpdate) {
+    const cookieStore = cookies()
+    const supabase = createClient(cookieStore)
+
+    const { error } = await supabase
+        .from('sets')
+        .update(set)
+        .eq('id', set.id)
 }

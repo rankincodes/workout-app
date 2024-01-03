@@ -3,7 +3,7 @@
 import * as z from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { createExercise, createSet } from "@/lib/actions/exercises"
+import { createExercise, createSet, updateSet } from "@/lib/actions/exercises"
 import React from "react"
 import { IconBarbell, IconClock, IconExposurePlus1 } from "@tabler/icons-react"
 import { toast } from "@/components/ui/use-toast"
@@ -29,31 +29,39 @@ const FormSchema = z.object({
 })
 
 
-export const NewSetForm: React.FC<{
+export const SetForm: React.FC<{
     exercise: Exercise,
-    lastSet: Set | null
-}> = ({ exercise, lastSet }) => {
+    lastSet?: Set | null,
+    set?: Set,
+}> = ({ exercise, lastSet, set }) => {
     const router = useRouter()
     const weightInputRef = React.useRef<HTMLInputElement>(null)
     const repInputRef = React.useRef<HTMLInputElement>(null)
-    
+
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            weight: lastSet?.weight ?? 0,
-            reps: lastSet?.reps ?? 0,
-            duration_secs: lastSet?.duration_secs ?? 0,
-            date: new Date(),
+            weight: set?.weight ?? lastSet?.weight ?? 0,
+            reps: set?.reps ?? lastSet?.reps ?? 0,
+            duration_secs: set?.duration_secs ?? lastSet?.duration_secs ?? 0,
+            date: set ? new Date(set.date) : new Date(),
         },
     })
 
     async function onSubmit(data: z.infer<typeof FormSchema>) {
-        toast({
-            title: 'Set recorded',
-        })
+        if (set) {
+            toast({
+                title: 'Set updated',
+            })
+            await updateSet({ id: set.id, ...data, date: data.date.toLocaleDateString() })
+        } else {
+            toast({
+                title: 'Set recorded',
+            })
 
-        await createSet(exercise, { ...data, date: data.date.toLocaleDateString() })
+            await createSet(exercise, { ...data, date: data.date.toLocaleDateString() })
+        }
         router.push(`/exercises/${exercise.id}`)
     }
 

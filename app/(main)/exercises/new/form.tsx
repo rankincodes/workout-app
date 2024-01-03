@@ -4,7 +4,7 @@ import * as z from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PlusIcon } from "@radix-ui/react-icons"
-import { createExercise } from "@/lib/actions/exercises"
+import { createExercise, updateExercise } from "@/lib/actions/exercises"
 import React from "react"
 import { IconBarbell, IconClock, IconExposurePlus1 } from "@tabler/icons-react"
 import { toast } from "@/components/ui/use-toast"
@@ -15,6 +15,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { Exercise } from "@/lib/types/app.types"
 
 const FormSchema = z.object({
     name: z.string().min(3).max(255),
@@ -25,24 +26,33 @@ const FormSchema = z.object({
 
 const toggleKeys = ["has_reps", "has_duration", "has_weight"] as const
 
-export const NewExerciseForm: React.FC = () => {
+export const ExerciseForm: React.FC<{ exercise?: Exercise }> = ({ exercise }) => {
     const router = useRouter()
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            name: "",
-            has_reps: true,
-            has_duration: false,
-            has_weight: true,
+            name: exercise?.name ?? "",
+            has_reps: exercise?.has_reps ?? true,
+            has_duration: exercise?.has_duration ?? false,
+            has_weight: exercise?.has_weight ?? true,
         },
     })
 
     async function onSubmit(data: z.infer<typeof FormSchema>) {
-        toast({
-            title: `${data.name} added`,
-        })
+        if (exercise) {
+            toast({
+                title: `${data.name} updated`,
+            })
 
-        await createExercise(data)
+            await updateExercise({ id: exercise.id, ...data })
+        } else {
+            toast({
+                title: `${data.name} added`,
+            })
+
+            await createExercise(data)
+        }
+
         router.push("/")
     }
 
